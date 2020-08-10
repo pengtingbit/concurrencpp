@@ -39,6 +39,9 @@
 
 #Others
 .vs
+.cproject
+.project
+.settings
 
 #Specific directories
 /build
