@@ -10,7 +10,7 @@ set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} ${CLANG_COROUTINES_COMPILE_FLAGS}")
 set(CMAKE_BUILD_TYPE Release)
 #set(CMAKE_BUILD_TYPE RELWITHDEBINFO)
 
-include_directories(../concurrencpp/include)
+include_directories(../include)
 
 add_executable(
     sandbox

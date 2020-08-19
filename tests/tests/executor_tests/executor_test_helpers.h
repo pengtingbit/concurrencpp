@@ -2,8 +2,8 @@
 #define CONCURRENCPP_EXECUTOR_TEST_HELPERS_H
 
 #include "../../helpers/assertions.h"
-#include "../../concurrencpp/src/executors/constants.h"
-#include "../../concurrencpp/src/executors/executor.h"
+#include "executors/constants.h"
+#include "executors/executor.h"
 
 namespace concurrencpp::tests {
 	struct executor_shutdowner {

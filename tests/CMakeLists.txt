@@ -1,19 +1,30 @@
-cmake_minimum_required(VERSION 3.18.0)
-project(tests)
+# Configuration script for the folder.
+# Execute cmake one level up to (re)generate the
+# Projectfiles/Makefiles
 
-set(CMAKE_CXX_COMPILER clang++)
-set(CMAKE_CXX_STANDARD 20)
+
+include_directories(${source_dir}/include)
+set(GTEST_PATH ${PROJECT_SOURCE_DIR}/contrib)
+set(GTEST_SRC ${GTEST_PATH}/gtest/gtest-all.cc)
+set(GTEST_MAIN ${GTEST_PATH}/gtest/gtest_main.cc)
+include_directories(
+	../include
+	#../src
+	./
+	${GTEST_PATH}
+)
+
+link_directories( 
+	${CMAKE_CURRENT_BINARY_DIR}/src
+)
 
 set(CLANG_COROUTINES_COMPILE_FLAGS "-Wall -Wextra -stdlib=libc++ -fcoroutines-ts")
 
 set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} ${CLANG_COROUTINES_COMPILE_FLAGS}")
-set(CMAKE_BUILD_TYPE Release)
-#set(CMAKE_BUILD_TYPE RELWITHDEBINFO)
 
-include_directories(../concurrencpp/include)
-
-add_executable(
-	tests
+add_executable( tests
+	#${GTEST_SRC}
+	#${GTEST_MAIN}
 	main.cpp
 	helpers/assertions.cpp
 	helpers/object_observer.cpp
@@ -36,8 +47,14 @@ add_executable(
 	tests/result_tests/result_promise_tests.cpp
 	tests/result_tests/coroutine_adapters_tests.cpp
 )
+
+
 find_library(LIBRT rt)                                                                                                                                                                                                                                                                                        
 	if(LIBRT)
 		target_link_libraries(tests ${LIBRT})
 	endif()
 target_link_libraries(tests concurrencpp pthread)
+
+add_test(tests-${PROJECT_NAME} tests --gtest_output=xml:${CMAKE_CURRENT_BINARY_DIR}/xunit.xml)
+# Adding custom test target "check" because it is the only way to show the full output of test errors on console
+add_custom_target(check-${PROJECT_NAME} COMMAND ${CMAKE_CTEST_COMMAND} --force-new-ctest-process --output-on-failure)
