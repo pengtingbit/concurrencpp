@@ -1,13 +1,3 @@
-cmake_minimum_required(VERSION 3.18.0)
-project(concurrencpp)
-
-set(CMAKE_CXX_COMPILER clang++)
-set(CMAKE_CXX_STANDARD 20)
-
-set(CLANG_COROUTINES_COMPILE_FLAGS "-Wall -Wextra -stdlib=libc++ -fcoroutines-ts")
-
-set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} ${CLANG_COROUTINES_COMPILE_FLAGS}")
-
 set(SOURCE
 	executors/executor.cpp
 	runtime/runtime.cpp

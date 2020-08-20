@@ -11,7 +11,7 @@ namespace concurrencpp {
 
 	private:
 		mutable std::mutex m_lock;
-		std::deque<std::experimental::coroutine_handle<>> m_tasks;
+		std::deque<std::coroutine_handle<>> m_tasks;
 		std::condition_variable m_condition;
 		bool m_abort;
 		std::atomic_bool m_atomic_abort;
@@ -24,8 +24,8 @@ namespace concurrencpp {
 			m_abort(false),
 			m_atomic_abort(false) {};
 
-		void enqueue(std::experimental::coroutine_handle<> task) override;
-		void enqueue(std::span<std::experimental::coroutine_handle<>> tasks) override;
+		void enqueue(std::coroutine_handle<> task) override;
+		void enqueue(std::span<std::coroutine_handle<>> tasks) override;
 
 		int max_concurrency_level() const noexcept override;
 

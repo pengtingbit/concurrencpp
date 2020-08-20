@@ -9,7 +9,7 @@ void manual_executor::destroy_tasks() noexcept {
 	}
 }
 
-void manual_executor::enqueue(std::experimental::coroutine_handle<> task) {
+void manual_executor::enqueue(std::coroutine_handle<> task) {
 	if (m_atomic_abort.load(std::memory_order_relaxed)) {
 		details::throw_executor_shutdown_exception(name);
 	}
@@ -22,7 +22,7 @@ void manual_executor::enqueue(std::experimental::coroutine_handle<> task) {
 	m_condition.notify_all();
 }
 
-void manual_executor::enqueue(std::span<std::experimental::coroutine_handle<>> tasks) {
+void manual_executor::enqueue(std::span<std::coroutine_handle<>> tasks) {
 	if (m_atomic_abort.load(std::memory_order_relaxed)) {
 		details::throw_executor_shutdown_exception(name);
 	}

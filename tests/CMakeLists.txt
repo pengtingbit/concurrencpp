@@ -18,10 +18,6 @@ link_directories(
 	${CMAKE_CURRENT_BINARY_DIR}/src
 )
 
-set(CLANG_COROUTINES_COMPILE_FLAGS "-Wall -Wextra -stdlib=libc++ -fcoroutines-ts")
-
-set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} ${CLANG_COROUTINES_COMPILE_FLAGS}")
-
 add_executable( tests
 	#${GTEST_SRC}
 	#${GTEST_MAIN}

@@ -7,7 +7,7 @@
 #include "../../helpers/assertions.h"
 #include "../../helpers/random.h"
 
-#include <experimental/coroutine>
+#include <coroutine>
 
 namespace concurrencpp::tests {
 	template<class type>

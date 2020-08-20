@@ -8,7 +8,7 @@
 
 namespace concurrencpp {
 	template<class type>
-	class awaitable : public std::experimental::suspend_always {
+	class awaitable : public std::suspend_always {
 
 	private:
 		std::shared_ptr<details::result_core<type>> m_state;
@@ -19,7 +19,7 @@ namespace concurrencpp {
 
 		awaitable(awaitable&& rhs) noexcept = default;
 
-		bool await_suspend(std::experimental::coroutine_handle<> caller_handle) {
+		bool await_suspend(std::coroutine_handle<> caller_handle) {
 			if (!static_cast<bool>(m_state)) {
 				throw concurrencpp::errors::empty_awaitable(details::consts::k_result_awaitable_error_msg);
 			}
@@ -34,7 +34,7 @@ namespace concurrencpp {
 	};
 
 	template<class type>
-	class via_awaitable : public std::experimental::suspend_always {
+	class via_awaitable : public std::suspend_always {
 
 	private:
 		std::shared_ptr<details::result_core<type>> m_state;
@@ -52,7 +52,7 @@ namespace concurrencpp {
 
 		via_awaitable(via_awaitable&& rhs) noexcept = default;
 
-		bool await_suspend(std::experimental::coroutine_handle<> caller_handle) {
+		bool await_suspend(std::coroutine_handle<> caller_handle) {
 			if (!static_cast<bool>(m_state)) {
 				throw concurrencpp::errors::empty_awaitable(details::consts::k_result_awaitable_error_msg);
 			}
@@ -67,7 +67,7 @@ namespace concurrencpp {
 	};
 
 	template<class type>
-	class resolve_awaitable final : public std::experimental::suspend_always {
+	class resolve_awaitable final : public std::suspend_always {
 
 	private:
 		std::shared_ptr<details::result_core<type>> m_state;
@@ -78,7 +78,7 @@ namespace concurrencpp {
 
 		resolve_awaitable(resolve_awaitable&&) noexcept = default;
 
-		bool await_suspend(std::experimental::coroutine_handle<> caller_handle) {
+		bool await_suspend(std::coroutine_handle<> caller_handle) {
 			if (!static_cast<bool>(m_state)) {
 				throw concurrencpp::errors::empty_awaitable(details::consts::k_result_awaitable_error_msg);
 			}
@@ -92,7 +92,7 @@ namespace concurrencpp {
 	};
 
 	template<class type>
-	class resolve_via_awaitable final : public std::experimental::suspend_always {
+	class resolve_via_awaitable final : public std::suspend_always {
 
 	private:
 		std::shared_ptr<details::result_core<type>> m_state;
@@ -110,7 +110,7 @@ namespace concurrencpp {
 
 		resolve_via_awaitable(resolve_via_awaitable&&) noexcept = default;
 
-		bool await_suspend(std::experimental::coroutine_handle<> caller_handle) {
+		bool await_suspend(std::coroutine_handle<> caller_handle) {
 			if (!static_cast<bool>(m_state)) {
 				throw concurrencpp::errors::empty_awaitable(details::consts::k_result_awaitable_error_msg);
 			}

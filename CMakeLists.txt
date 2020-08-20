@@ -6,8 +6,7 @@ cmake_minimum_required(VERSION 3.18.0)
 set(PROJECTNAME "concurrencpp")
 project("concurrencpp" C CXX)
 message(STATUS "### ${PROJECT_NAME} ###")
-
-set(CMAKE_CXX_COMPILER /usr/bin/clang++)
+message(STATUS "### ${CXX} ###")
 set(CMAKE_CXX_STANDARD 20)
 
 set(CMAKE_BUILD_TYPE Debug CACHE STRING "Build Type: Debug or Flight")
@@ -33,7 +32,7 @@ set(BOARD_DRIVER "board" CACHE STRING "Specific hardware driver for communicatio
 
 find_package(Threads REQUIRED)
 
-set(CLANG_COROUTINES_COMPILE_FLAGS "-Wall -Wextra -stdlib=libc++ -fcoroutines-ts")
+set(CLANG_COROUTINES_COMPILE_FLAGS "-Wall -Wextra -std=c++2a")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CLANG_COROUTINES_COMPILE_FLAGS}")
 
 #if( CMAKE_BUILD_TYPE MATCHES Debug AND STANDALONE_BUILD )
@@ -65,9 +64,9 @@ if(CMAKE_BUILD_TYPE MATCHES Debug)
   add_dependencies(tests ${PROJECT_NAME})
 else()
   #add_subdirectory(examples EXCLUDE_FROM_ALL)
-  add_subdirectory(examples)
+  #add_subdirectory(examples)
   add_subdirectory(sandbox)
-  add_subdirectory(thread_sanitizers)
+  #add_subdirectory(thread_sanitizers)
 endif()
 
 

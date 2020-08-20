@@ -92,7 +92,7 @@ void worker_thread_executor::work_loop() noexcept {
 	}
 }
 
-void worker_thread_executor::enqueue_local(std::experimental::coroutine_handle<> task) {
+void worker_thread_executor::enqueue_local(std::coroutine_handle<> task) {
 	if (!m_private_atomic_abort.load(std::memory_order_relaxed)) {
 		m_private_queue.emplace_back(task);
 		return;
@@ -101,7 +101,7 @@ void worker_thread_executor::enqueue_local(std::experimental::coroutine_handle<>
 	details::throw_executor_shutdown_exception(name);
 }
 
-void worker_thread_executor::enqueue_local(std::span<std::experimental::coroutine_handle<>> tasks) {
+void worker_thread_executor::enqueue_local(std::span<std::coroutine_handle<>> tasks) {
 	if (!m_private_atomic_abort.load(std::memory_order_relaxed)) {
 		m_private_queue.insert(m_private_queue.end(), tasks.begin(), tasks.end());
 		return;
@@ -110,7 +110,7 @@ void worker_thread_executor::enqueue_local(std::span<std::experimental::coroutin
 	details::throw_executor_shutdown_exception(name);
 }
 
-void worker_thread_executor::enqueue_foreign(std::experimental::coroutine_handle<> task) {
+void worker_thread_executor::enqueue_foreign(std::coroutine_handle<> task) {
 	{
 		std::unique_lock<decltype(m_lock)> lock(m_lock);
 		if (m_abort) {
@@ -123,7 +123,7 @@ void worker_thread_executor::enqueue_foreign(std::experimental::coroutine_handle
 	m_condition.notify_one();
 }
 
-void worker_thread_executor::enqueue_foreign(std::span<std::experimental::coroutine_handle<>> tasks) {
+void worker_thread_executor::enqueue_foreign(std::span<std::coroutine_handle<>> tasks) {
 	{
 		std::unique_lock<decltype(m_lock)> lock(m_lock);
 		if (m_abort) {
@@ -136,7 +136,7 @@ void worker_thread_executor::enqueue_foreign(std::span<std::experimental::corout
 	m_condition.notify_one();
 }
 
-void worker_thread_executor::enqueue(std::experimental::coroutine_handle<> task) {
+void worker_thread_executor::enqueue(std::coroutine_handle<> task) {
 	if (details::s_tl_this_worker == this) {
 		return enqueue_local(task);
 	}
@@ -144,7 +144,7 @@ void worker_thread_executor::enqueue(std::experimental::coroutine_handle<> task)
 	enqueue_foreign(task);
 }
 
-void worker_thread_executor::enqueue(std::span<std::experimental::coroutine_handle<>> tasks) {
+void worker_thread_executor::enqueue(std::span<std::coroutine_handle<>> tasks) {
 	if (details::s_tl_this_worker == this) {
 		return enqueue_local(tasks);
 	}

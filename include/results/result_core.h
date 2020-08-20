@@ -17,7 +17,7 @@
 namespace concurrencpp::details {
 	struct result_core_per_thread_data {
 		executor* executor = nullptr;
-		std::vector<std::experimental::coroutine_handle<>>* accumulator = nullptr;
+		std::vector<std::coroutine_handle<>>* accumulator = nullptr;
 
 		static thread_local result_core_per_thread_data s_tl_per_thread_data;
 	};
@@ -144,7 +144,7 @@ namespace concurrencpp::details {
 	public:
 		using consumer_context = std::variant<
 			std::monostate,
-			std::experimental::coroutine_handle<>,
+			std::coroutine_handle<>,
 			await_context,
 			std::shared_ptr<wait_context>>;
 
@@ -170,20 +170,20 @@ namespace concurrencpp::details {
 			m_consumer.template emplace<0>();
 		}
 
-		static void schedule_coroutine(executor& executor, std::experimental::coroutine_handle<> handle);
+		static void schedule_coroutine(executor& executor, std::coroutine_handle<> handle);
 		static void schedule_coroutine(await_context& await_ctx);
 
 	public:
 		void wait();
 
-		bool await(std::experimental::coroutine_handle<> caller_handle) noexcept;
+		bool await(std::coroutine_handle<> caller_handle) noexcept;
 
 		bool await_via(
 			std::shared_ptr<concurrencpp::executor> executor,
-			std::experimental::coroutine_handle<> caller_handle,
+			std::coroutine_handle<> caller_handle,
 			bool force_rescheduling);
 
-		static bool initial_reschedule(std::experimental::coroutine_handle<> handle);
+		static bool initial_reschedule(std::coroutine_handle<> handle);
 	};
 
 	template<class type>

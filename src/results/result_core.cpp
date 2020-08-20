@@ -62,7 +62,7 @@ void result_core_base::wait() {
 	assert_done();
 }
 
-bool result_core_base::await(std::experimental::coroutine_handle<> caller_handle) noexcept {
+bool result_core_base::await(std::coroutine_handle<> caller_handle) noexcept {
 	assert_consumer_idle();
 	m_consumer.template emplace<1>(caller_handle);
 
@@ -82,7 +82,7 @@ bool result_core_base::await(std::experimental::coroutine_handle<> caller_handle
 
 bool result_core_base::await_via(
 	std::shared_ptr<concurrencpp::executor> executor,
-	std::experimental::coroutine_handle<> caller_handle,
+	std::coroutine_handle<> caller_handle,
 	bool force_rescheduling) {
 	assert(static_cast<bool>(executor));
 
@@ -120,7 +120,7 @@ bool result_core_base::await_via(
 
 void result_core_base::schedule_coroutine(
 	concurrencpp::executor& executor,
-	std::experimental::coroutine_handle<> coro_handle) {
+	std::coroutine_handle<> coro_handle) {
 	assert(static_cast<bool>(coro_handle));
 	assert(!coro_handle.done());
 	executor.enqueue(coro_handle);
@@ -134,7 +134,7 @@ void result_core_base::schedule_coroutine(await_context& await_ctx) {
 	schedule_coroutine(*executor, coro_handle);
 }
 
-bool result_core_base::initial_reschedule(std::experimental::coroutine_handle<> handle) {
+bool result_core_base::initial_reschedule(std::coroutine_handle<> handle) {
 	auto executor_ptr = std::exchange(result_core_per_thread_data::s_tl_per_thread_data.executor, nullptr);
 	if (executor_ptr != nullptr) {
 		executor_ptr->enqueue(handle);

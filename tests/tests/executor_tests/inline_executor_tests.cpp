@@ -40,12 +40,12 @@ void concurrencpp::tests::test_inline_executor_shutdown() {
 	assert_true(executor->shutdown_requested());
 
 	assert_throws<concurrencpp::errors::executor_shutdown>([executor] {
-		executor->enqueue(std::experimental::coroutine_handle{});
+		executor->enqueue(std::coroutine_handle{});
 	});
 
 	assert_throws<concurrencpp::errors::executor_shutdown>([executor] {
-		std::experimental::coroutine_handle<> array[4];
-		std::span<std::experimental::coroutine_handle<>> span = array;
+		std::coroutine_handle<> array[4];
+		std::span<std::coroutine_handle<>> span = array;
 		executor->enqueue(span);
 	});
 }

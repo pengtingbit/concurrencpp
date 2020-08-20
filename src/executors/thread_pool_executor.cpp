@@ -316,7 +316,7 @@ void thread_pool_worker::ensure_worker_active(std::unique_lock<std::mutex>& lock
 	}
 }
 
-void thread_pool_worker::enqueue_foreign(std::experimental::coroutine_handle<> task) {
+void thread_pool_worker::enqueue_foreign(std::coroutine_handle<> task) {
 	std::unique_lock<std::mutex> lock(m_lock);
 	if (m_abort) {
 		throw_executor_shutdown_exception(m_parent_pool.name);
@@ -326,7 +326,7 @@ void thread_pool_worker::enqueue_foreign(std::experimental::coroutine_handle<> t
 	ensure_worker_active(lock);
 }
 
-void thread_pool_worker::enqueue_foreign(std::span<std::experimental::coroutine_handle<>> tasks) {
+void thread_pool_worker::enqueue_foreign(std::span<std::coroutine_handle<>> tasks) {
 	std::unique_lock<std::mutex> lock(m_lock);
 	if (m_abort) {
 		throw_executor_shutdown_exception(m_parent_pool.name);
@@ -336,7 +336,7 @@ void thread_pool_worker::enqueue_foreign(std::span<std::experimental::coroutine_
 	ensure_worker_active(lock);
 }
 
-void thread_pool_worker::enqueue_local(std::experimental::coroutine_handle<> task) {
+void thread_pool_worker::enqueue_local(std::coroutine_handle<> task) {
 	if (m_atomic_abort.load(std::memory_order_relaxed)) {
 		throw_executor_shutdown_exception(m_parent_pool.name);
 	}
@@ -344,7 +344,7 @@ void thread_pool_worker::enqueue_local(std::experimental::coroutine_handle<> tas
 	m_private_queue.emplace_back(task);
 }
 
-void thread_pool_worker::enqueue_local(std::span<std::experimental::coroutine_handle<>> tasks) {
+void thread_pool_worker::enqueue_local(std::span<std::coroutine_handle<>> tasks) {
 	if (m_atomic_abort.load(std::memory_order_relaxed)) {
 		throw_executor_shutdown_exception(m_parent_pool.name);
 	}
@@ -405,7 +405,7 @@ void thread_pool_executor::mark_worker_active(size_t index) noexcept {
 	m_idle_workers.set_active(index);
 }
 
-void thread_pool_executor::enqueue(std::experimental::coroutine_handle<> task) {
+void thread_pool_executor::enqueue(std::coroutine_handle<> task) {
 	const auto idle_worker_pos = m_idle_workers.find_idle_worker(details::s_tl_thread_pool_data.this_thread_index);
 	if (idle_worker_pos != static_cast<size_t>(-1)) {
 		return m_workers[idle_worker_pos].enqueue_foreign(task);
@@ -419,7 +419,7 @@ void thread_pool_executor::enqueue(std::experimental::coroutine_handle<> task) {
 	m_workers[next_worker].enqueue_foreign(task);
 }
 
-void thread_pool_executor::enqueue(std::span<std::experimental::coroutine_handle<>> tasks) {
+void thread_pool_executor::enqueue(std::span<std::coroutine_handle<>> tasks) {
 	if (details::s_tl_thread_pool_data.this_worker != nullptr) {
 		return details::s_tl_thread_pool_data.this_worker->enqueue_local(tasks);
 	}
@@ -441,7 +441,7 @@ void thread_pool_executor::enqueue(std::span<std::experimental::coroutine_handle
 
 	while (cursor < absolute_end) {
 		auto end = (cursor + bulk_size > absolute_end) ? absolute_end : (cursor + bulk_size);
-		std::span<std::experimental::coroutine_handle<>> range = { cursor, end };
+		std::span<std::coroutine_handle<>> range = { cursor, end };
 		m_workers[worker_index].enqueue_foreign(range);
 		cursor += bulk_size;
 		++worker_index;

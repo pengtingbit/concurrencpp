@@ -8,7 +8,7 @@
 #include <vector>
 #include <deque>
 #include <condition_variable>
-#include <experimental/coroutine>
+#include <coroutine>
 
 #include "../threads/thread.h"
 
@@ -59,7 +59,7 @@ namespace concurrencpp::details {
 		};
 
 	private:
-		std::deque<std::experimental::coroutine_handle<>> m_private_queue;
+		std::deque<std::coroutine_handle<>> m_private_queue;
 		std::vector<size_t> m_idle_worker_list;
 		std::atomic_bool m_atomic_abort;
 		thread_pool_executor& m_parent_pool;
@@ -70,7 +70,7 @@ namespace concurrencpp::details {
 		const char m_padding[64] = {};
 		std::mutex m_lock;
 		status m_status;
-		std::deque<std::experimental::coroutine_handle<>> m_public_queue;
+		std::deque<std::coroutine_handle<>> m_public_queue;
 		thread m_thread;
 		std::condition_variable m_condition;
 		bool m_abort;
@@ -96,11 +96,11 @@ namespace concurrencpp::details {
 		thread_pool_worker(thread_pool_worker&& rhs) noexcept;
 		~thread_pool_worker() noexcept;
 
-		void enqueue_foreign(std::experimental::coroutine_handle<> task);
-		void enqueue_foreign(std::span<std::experimental::coroutine_handle<>> tasks);
+		void enqueue_foreign(std::coroutine_handle<> task);
+		void enqueue_foreign(std::span<std::coroutine_handle<>> tasks);
 
-		void enqueue_local(std::experimental::coroutine_handle<> task);
-		void enqueue_local(std::span<std::experimental::coroutine_handle<>> tasks);
+		void enqueue_local(std::coroutine_handle<> task);
+		void enqueue_local(std::span<std::coroutine_handle<>> tasks);
 
 		void abort() noexcept;
 		void join() noexcept;
@@ -135,8 +135,8 @@ namespace concurrencpp {
 
 		~thread_pool_executor() noexcept;
 
-		void enqueue(std::experimental::coroutine_handle<> task) override;
-		void enqueue(std::span<std::experimental::coroutine_handle<>> tasks) override;
+		void enqueue(std::coroutine_handle<> task) override;
+		void enqueue(std::span<std::coroutine_handle<>> tasks) override;
 
 		int max_concurrency_level() const noexcept override;
 

@@ -6,8 +6,8 @@
 #include "../errors.h"
 
 namespace concurrencpp::details {
-	struct initial_awaiter : public std::experimental::suspend_always {
-		bool await_suspend(std::experimental::coroutine_handle<> handle) const {
+	struct initial_awaiter : public std::suspend_always {
+		bool await_suspend(std::coroutine_handle<> handle) const {
 			return result_core_base::initial_reschedule(handle);
 		}
 	};
@@ -50,7 +50,7 @@ namespace concurrencpp::details {
 		static void* operator new (
 			size_t size,
 			executor_bulk_tag,
-			std::vector<std::experimental::coroutine_handle<>>* accumulator,
+			std::vector<std::coroutine_handle<>>* accumulator,
 			argument_types&& ...) {
 
 			assert(accumulator != nullptr);
@@ -70,7 +70,7 @@ namespace concurrencpp::details {
 			return {};
 		}
 
-		std::experimental::suspend_never final_suspend() const noexcept {
+		std::suspend_never final_suspend() const noexcept {
 			return {};
 		}
 
@@ -98,7 +98,7 @@ namespace concurrencpp::details {
 	};
 
 	template<class type>
-	struct result_publisher : public std::experimental::suspend_always {
+	struct result_publisher : public std::suspend_always {
 		bool await_suspend(coro_handle<type> handle) const noexcept {
 		 	handle.promise().publish_result();
 			return false; //don't suspend, resume and destroy this

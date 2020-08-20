@@ -157,11 +157,11 @@ namespace concurrencpp::tests {
 			return std::this_thread::get_id() == m_setting_thread.get_id();
 		}
 
-		void enqueue(std::experimental::coroutine_handle<> task) override {
+		void enqueue(std::coroutine_handle<> task) override {
 			m_execution_thread = std::thread(std::move(task));
 		}
 
-		void enqueue(std::span<std::experimental::coroutine_handle<>> span) override {
+		void enqueue(std::span<std::coroutine_handle<>> span) override {
 			for (auto task : span) {
 				enqueue(task);
 			}
@@ -197,11 +197,11 @@ namespace concurrencpp::tests {
 
 		throwing_executor() : executor("throwing_executor") {}
 
-		void enqueue(std::experimental::coroutine_handle<>) override {
+		void enqueue(std::coroutine_handle<>) override {
 			throw std::runtime_error("executor exception");
 		}
 
-		void enqueue(std::span<std::experimental::coroutine_handle<>>) override {
+		void enqueue(std::span<std::coroutine_handle<>>) override {
 			throw std::runtime_error("executor exception");
 		}
 
