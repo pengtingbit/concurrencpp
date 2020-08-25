@@ -13,11 +13,11 @@ namespace concurrencpp::details {
 }
 
 namespace concurrencpp {
-	class executor {
+	class Executor {
 
 	private:
 		template<class callable_type, class decayed_type = typename std::decay_t<callable_type>>
-		static null_result post_bridge(executor_tag, executor*, decayed_type callable) {
+		static null_result post_bridge(executor_tag, Executor*, decayed_type callable) {
 			callable();
 			co_return;
 		}
@@ -34,7 +34,7 @@ namespace concurrencpp {
 		template<class callable_type,
 			class decayed_type = typename std::decay_t<callable_type>,
 			class return_type = typename std::invoke_result_t<decayed_type>>
-			static result<return_type> submit_bridge(executor_tag, executor*, decayed_type callable) {
+			static result<return_type> submit_bridge(executor_tag, Executor*, decayed_type callable) {
 			co_return callable();
 		}
 
@@ -49,9 +49,9 @@ namespace concurrencpp {
 		}
 
 	public:
-		executor(std::string_view name) : name(name) {}
+		Executor(std::string_view name) : name(name) {}
 
-		virtual ~executor() noexcept = default;
+		virtual ~Executor() noexcept = default;
 
 		const std::string name;
 

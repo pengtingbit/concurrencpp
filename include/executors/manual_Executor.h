@@ -1,13 +1,14 @@
 #ifndef CONCURRENCPP_MANUAL_EXECUTOR_H
 #define CONCURRENCPP_MANUAL_EXECUTOR_H
 
-#include "executor.h"
 #include "constants.h"
 
 #include <deque>
 
+#include "executor.h"
+
 namespace concurrencpp {
-	class alignas(64) manual_executor final : public executor {
+	class alignas(64) manual_executor final : public Executor {
 
 	private:
 		mutable std::mutex m_lock;
@@ -20,7 +21,7 @@ namespace concurrencpp {
 
 	public:
 		manual_executor() :
-			executor(details::consts::k_manual_executor_name),
+			Executor(details::consts::k_manual_executor_name),
 			m_abort(false),
 			m_atomic_abort(false) {};
 

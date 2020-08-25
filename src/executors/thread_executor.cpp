@@ -1,10 +1,10 @@
-#include "thread_executor.h"
+#include "thread_Executor.h"
 #include "constants.h"
 
-using concurrencpp::thread_executor;
+using concurrencpp::Thread_executor;
 using concurrencpp::details::thread_worker;
 
-thread_worker::thread_worker(thread_executor& parent_pool) noexcept :
+thread_worker::thread_worker(Thread_executor& parent_pool) noexcept :
 	m_parent_pool(parent_pool) {}
 
 thread_worker::~thread_worker() noexcept {
@@ -27,17 +27,17 @@ void thread_worker::start(
 	});
 }
 
-thread_executor::~thread_executor() noexcept {
+Thread_executor::~Thread_executor() noexcept {
 	assert(m_workers.empty());
 	assert(m_last_retired.empty());
 }
 
-void thread_executor::enqueue_impl(std::coroutine_handle<> task) {
+void Thread_executor::enqueue_impl(std::coroutine_handle<> task) {
 	m_workers.emplace_front(*this);
 	m_workers.front().start(details::make_executor_worker_name(name), task, m_workers.begin());
 }
 
-void thread_executor::enqueue(std::coroutine_handle<> task) {
+void Thread_executor::enqueue(std::coroutine_handle<> task) {
 	if (m_atomic_abort.load(std::memory_order_relaxed)) {
 		details::throw_executor_shutdown_exception(name);
 	}
@@ -46,7 +46,7 @@ void thread_executor::enqueue(std::coroutine_handle<> task) {
 	enqueue_impl(task);
 }
 
-void thread_executor::enqueue(std::span<std::coroutine_handle<>> tasks) {
+void Thread_executor::enqueue(std::span<std::coroutine_handle<>> tasks) {
 	if (m_atomic_abort.load(std::memory_order_relaxed)) {
 		details::throw_executor_shutdown_exception(name);
 	}
@@ -57,15 +57,15 @@ void thread_executor::enqueue(std::span<std::coroutine_handle<>> tasks) {
 	}
 }
 
-int thread_executor::max_concurrency_level() const noexcept {
+int Thread_executor::max_concurrency_level() const noexcept {
 	return details::consts::k_thread_executor_max_concurrency_level;
 }
 
-bool thread_executor::shutdown_requested() const noexcept {
+bool Thread_executor::shutdown_requested() const noexcept {
 	return m_atomic_abort.load(std::memory_order_relaxed);
 }
 
-void thread_executor::shutdown() noexcept {
+void Thread_executor::shutdown() noexcept {
 	m_atomic_abort.store(true, std::memory_order_relaxed);
 
 	std::unique_lock<decltype(m_lock)> lock(m_lock);
@@ -73,7 +73,7 @@ void thread_executor::shutdown() noexcept {
 	m_last_retired.clear();
 }
 
-void thread_executor::retire_worker(std::list<thread_worker>::iterator it) {
+void Thread_executor::retire_worker(std::list<thread_worker>::iterator it) {
 	std::unique_lock<decltype(m_lock)> lock(m_lock);
 	auto last_retired = std::move(m_last_retired);
 	m_last_retired.splice(m_last_retired.begin(), m_workers, it);

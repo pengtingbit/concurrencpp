@@ -1,4 +1,4 @@
-#include "worker_thread_executor.h"
+#include "worker_thread_Executor.h"
 #include "constants.h"
 
 #include "../errors.h"
@@ -10,7 +10,7 @@ namespace concurrencpp::details {
 using concurrencpp::worker_thread_executor;
 
 worker_thread_executor::worker_thread_executor() :
-	executor(details::consts::k_worker_thread_executor_name),
+	Executor(details::consts::k_worker_thread_executor_name),
 	m_private_atomic_abort(false),
 	m_abort(false),
 	m_atomic_abort(false) {

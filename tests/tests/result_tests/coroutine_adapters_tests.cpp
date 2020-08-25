@@ -64,15 +64,15 @@ namespace concurrencpp::tests {
 
 
 namespace concurrencpp::tests::coroutines {
-	std::shared_ptr<concurrencpp::thread_executor> get_coroutine_test_ex() {
-		static const auto s_executor = std::make_shared<concurrencpp::thread_executor>();
+	std::shared_ptr<concurrencpp::Thread_executor> get_coroutine_test_ex() {
+		static const auto s_executor = std::make_shared<concurrencpp::Thread_executor>();
 		static executor_shutdowner shutdown(s_executor);
 		return s_executor;
 	}
 }
 
 using concurrencpp::result;
-using concurrencpp::thread_pool_executor;
+using concurrencpp::Thread_pool_executor;
 using concurrencpp::tests::object_observer;
 
 template<class type>

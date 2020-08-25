@@ -1,4 +1,4 @@
-#include "thread_pool_executor.h"
+#include "thread_pool_Executor.h"
 #include "constants.h"
 
 #include <array>
@@ -6,18 +6,18 @@
 #include <ctime>
 #include <cmath>
 
-using concurrencpp::thread_pool_executor;
+using concurrencpp::Thread_pool_executor;
 using concurrencpp::details::idle_worker_set;
 using concurrencpp::details::thread_pool_worker;
 
 namespace concurrencpp::details {
-	class randomizer {
+	class Randomizer {
 
 	private:
 		uint32_t m_seed;
 
 	public:
-		randomizer(uint32_t seed) noexcept : m_seed(seed) {}
+		Randomizer(uint32_t seed) noexcept : m_seed(seed) {}
 
 		uint32_t operator()() noexcept {
 			m_seed = (214013 * m_seed + 2531011);
@@ -27,7 +27,7 @@ namespace concurrencpp::details {
 
 	struct thread_pool_per_thread_data {
 		thread_pool_worker* this_worker;
-		randomizer randomizer;
+		Randomizer randomizer;
 		size_t this_thread_index;
 
 		thread_pool_per_thread_data() noexcept :
@@ -133,7 +133,7 @@ void idle_worker_set::find_idle_workers(
 }
 
 thread_pool_worker::thread_pool_worker(
-	thread_pool_executor& parent_pool,
+	Thread_pool_executor& parent_pool,
 	size_t index,
 	size_t pool_size,
 	std::chrono::seconds max_idle_time) :
@@ -371,8 +371,8 @@ void thread_pool_worker::join() noexcept {
 	destroy_tasks();
 }
 
-thread_pool_executor::thread_pool_executor(std::string_view name, size_t size, std::chrono::seconds max_idle_time) :
-	executor(name),
+Thread_pool_executor::Thread_pool_executor(std::string_view name, size_t size, std::chrono::seconds max_idle_time) :
+	Executor(name),
 	m_round_robin_cursor(0),
 	m_idle_workers(size),
 	m_abort(false) {
@@ -389,23 +389,23 @@ thread_pool_executor::thread_pool_executor(std::string_view name, size_t size, s
 	}
 }
 
-thread_pool_executor::~thread_pool_executor() noexcept {}
+Thread_pool_executor::~Thread_pool_executor() noexcept {}
 
-void thread_pool_executor::find_idle_workers(size_t caller_index, std::vector<size_t>& buffer, size_t max_count) noexcept {
+void Thread_pool_executor::find_idle_workers(size_t caller_index, std::vector<size_t>& buffer, size_t max_count) noexcept {
 	m_idle_workers.find_idle_workers(caller_index, buffer, max_count);
 }
 
-void thread_pool_executor::mark_worker_idle(size_t index) noexcept {
+void Thread_pool_executor::mark_worker_idle(size_t index) noexcept {
 	assert(index < m_workers.size());
 	m_idle_workers.set_idle(index);
 }
 
-void thread_pool_executor::mark_worker_active(size_t index) noexcept {
+void Thread_pool_executor::mark_worker_active(size_t index) noexcept {
 	assert(index < m_workers.size());
 	m_idle_workers.set_active(index);
 }
 
-void thread_pool_executor::enqueue(std::coroutine_handle<> task) {
+void Thread_pool_executor::enqueue(std::coroutine_handle<> task) {
 	const auto idle_worker_pos = m_idle_workers.find_idle_worker(details::s_tl_thread_pool_data.this_thread_index);
 	if (idle_worker_pos != static_cast<size_t>(-1)) {
 		return m_workers[idle_worker_pos].enqueue_foreign(task);
@@ -419,7 +419,7 @@ void thread_pool_executor::enqueue(std::coroutine_handle<> task) {
 	m_workers[next_worker].enqueue_foreign(task);
 }
 
-void thread_pool_executor::enqueue(std::span<std::coroutine_handle<>> tasks) {
+void Thread_pool_executor::enqueue(std::span<std::coroutine_handle<>> tasks) {
 	if (details::s_tl_thread_pool_data.this_worker != nullptr) {
 		return details::s_tl_thread_pool_data.this_worker->enqueue_local(tasks);
 	}
@@ -448,15 +448,15 @@ void thread_pool_executor::enqueue(std::span<std::coroutine_handle<>> tasks) {
 	}
 }
 
-int thread_pool_executor::max_concurrency_level() const noexcept {
+int Thread_pool_executor::max_concurrency_level() const noexcept {
 	return static_cast<int>(m_workers.size());
 }
 
-bool thread_pool_executor::shutdown_requested() const noexcept {
+bool Thread_pool_executor::shutdown_requested() const noexcept {
 	return m_abort.load(std::memory_order_relaxed);
 }
 
-void concurrencpp::thread_pool_executor::shutdown() noexcept {
+void concurrencpp::Thread_pool_executor::shutdown() noexcept {
 	m_abort.store(true, std::memory_order_relaxed);
 
 	for (auto& worker : m_workers) {

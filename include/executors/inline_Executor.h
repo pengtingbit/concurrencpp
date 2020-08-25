@@ -1,11 +1,11 @@
 #ifndef CONCURRENCPP_INLINE_EXECUTOR_H
 #define CONCURRENCPP_INLINE_EXECUTOR_H
 
-#include "executor.h"
 #include "constants.h"
+#include "executor.h"
 
 namespace concurrencpp {
-	class inline_executor final : public executor {
+	class Inline_executor final : public Executor {
 
 	private:
 		std::atomic_bool m_abort;
@@ -19,8 +19,8 @@ namespace concurrencpp {
 		}
 
 	public:
-		inline_executor() noexcept :
-			executor(details::consts::k_inline_executor_name),
+		Inline_executor() noexcept :
+			Executor(details::consts::k_inline_executor_name),
 			m_abort(false) {}
 
 		void enqueue(std::coroutine_handle<> task) override {

@@ -4,6 +4,7 @@
 #include "result_core.h"
 
 #include "../errors.h"
+#include <coroutine>
 
 namespace concurrencpp::details {
 	struct initial_awaiter : public std::suspend_always {
@@ -26,7 +27,7 @@ namespace concurrencpp::details {
 			argument_types&& ...) {
 
 			static_assert(
-				std::is_base_of_v<concurrencpp::executor, executor_type>,
+				std::is_base_of_v<concurrencpp::Executor, executor_type>,
 				"concurrencpp::<<coroutine>> - first argument is executor_tag but second argument is not driven from concurrencpp::executor.");
 
 			assert(executor);

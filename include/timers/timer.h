@@ -16,8 +16,8 @@ namespace concurrencpp::details {
 		using milliseconds = std::chrono::milliseconds;
 
 	private:
-		const std::weak_ptr<timer_queue> m_timer_queue;
-		const std::shared_ptr<executor> m_executor;
+		const std::weak_ptr<Timer_queue> m_timer_queue;
+		const std::shared_ptr<Executor> m_executor;
 		const size_t m_due_time;
 		std::atomic_size_t m_frequency;
 		time_point m_deadline; //set by the c.tor, changed only by the timer_queue thread.
@@ -31,8 +31,8 @@ namespace concurrencpp::details {
 		timer_state_base(
 			size_t due_time,
 			size_t frequency,
-			std::shared_ptr<concurrencpp::executor> executor,
-			std::weak_ptr<concurrencpp::timer_queue> timer_queue,
+			std::shared_ptr<concurrencpp::Executor> executor,
+			std::weak_ptr<concurrencpp::Timer_queue> timer_queue,
 			bool is_oneshot) noexcept;
 
 		virtual ~timer_state_base() noexcept = default;
@@ -61,11 +61,11 @@ namespace concurrencpp::details {
 			return m_is_oneshot;
 		}
 
-		std::shared_ptr<executor> get_executor() const noexcept {
+		std::shared_ptr<Executor> get_executor() const noexcept {
 			return m_executor;
 		}
 
-		std::weak_ptr<timer_queue> get_timer_queue() const noexcept {
+		std::weak_ptr<Timer_queue> get_timer_queue() const noexcept {
 			return m_timer_queue;
 		}
 
@@ -85,8 +85,8 @@ namespace concurrencpp::details {
 		timer_state(
 			size_t due_time,
 			size_t frequency,
-			std::shared_ptr<concurrencpp::executor> executor,
-			std::weak_ptr<concurrencpp::timer_queue> timer_queue,
+			std::shared_ptr<concurrencpp::Executor> executor,
+			std::weak_ptr<concurrencpp::Timer_queue> timer_queue,
 			bool is_oneshot,
 			given_callable_type&& callable) :
 			timer_state_base(
@@ -125,8 +125,8 @@ namespace concurrencpp {
 		void cancel();
 
 		size_t get_due_time() const;
-		std::shared_ptr<executor> get_executor() const;
-		std::weak_ptr<timer_queue> get_timer_queue() const;
+		std::shared_ptr<Executor> get_executor() const;
+		std::weak_ptr<Timer_queue> get_timer_queue() const;
 
 		size_t get_frequency() const;
 		void set_frequency(size_t new_frequency);

@@ -5,7 +5,7 @@
 #include <random>
 #include <functional>
 
-concurrencpp::result<void> test_matrix_multiplication(std::shared_ptr<concurrencpp::thread_pool_executor> ex);
+concurrencpp::result<void> test_matrix_multiplication(std::shared_ptr<concurrencpp::Thread_pool_executor> ex);
 
 int main() {
 	concurrencpp::runtime runtime;
@@ -53,7 +53,7 @@ void test_matrix(const matrix& mtx0, const matrix& mtx1, const matrix& mtx2) {
 
 result<void> do_multiply(
 	executor_tag,
-	std::shared_ptr<thread_pool_executor> executor,
+	std::shared_ptr<Thread_pool_executor> executor,
 	const matrix& mtx0,
 	const matrix& mtx1,
 	matrix& mtx2,
@@ -69,7 +69,7 @@ result<void> do_multiply(
 	co_return;
 };
 
-result<void> test_matrix_multiplication(std::shared_ptr<thread_pool_executor> ex){
+result<void> test_matrix_multiplication(std::shared_ptr<Thread_pool_executor> ex){
 	auto mtx0_ptr = make_matrix();
 	auto mtx1_ptr = make_matrix();
 	auto mtx2_ptr = std::make_unique<matrix>();

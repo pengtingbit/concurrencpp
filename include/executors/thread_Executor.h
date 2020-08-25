@@ -1,7 +1,6 @@
 #ifndef CONCURRENCPP_THREAD_EXECUTOR_H
 #define CONCURRENCPP_THREAD_EXECUTOR_H
 
-#include "executor.h"
 #include "constants.h"
 
 #include "../threads/thread.h"
@@ -12,19 +11,21 @@
 #include <condition_variable>
 #include <coroutine>
 
+#include "executor.h"
+
 namespace concurrencpp::details {
 	class thread_worker {
 
 	private:
 		thread m_thread;
-		thread_executor& m_parent_pool;
+		Thread_executor& m_parent_pool;
 
 		void execute_and_retire(
 			std::coroutine_handle<> task,
 			typename std::list<thread_worker>::iterator self_it);
 
 	public:
-		thread_worker(thread_executor& parent_pool) noexcept;
+		thread_worker(Thread_executor& parent_pool) noexcept;
 		~thread_worker() noexcept;
 
 		void start(
@@ -35,7 +36,7 @@ namespace concurrencpp::details {
 }
 
 namespace concurrencpp {
-	class alignas(64) thread_executor final : public executor {
+	class alignas(64) Thread_executor final : public Executor {
 
 		friend class ::concurrencpp::details::thread_worker;
 
@@ -51,11 +52,11 @@ namespace concurrencpp {
 		void retire_worker(std::list<details::thread_worker>::iterator it);
 
 	public:
-		thread_executor() :
-			executor(details::consts::k_thread_executor_name),
+		Thread_executor() :
+			Executor(details::consts::k_thread_executor_name),
 			m_atomic_abort(false) {}
 
-		~thread_executor() noexcept;
+		~Thread_executor() noexcept;
 
 		void enqueue(std::coroutine_handle<> task) override;
 		void enqueue(std::span<std::coroutine_handle<>> tasks) override;

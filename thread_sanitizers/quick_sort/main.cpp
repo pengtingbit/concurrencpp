@@ -4,7 +4,7 @@
 
 concurrencpp::result<void> quick_sort(
 	concurrencpp::executor_tag,
-	std::shared_ptr<concurrencpp::thread_pool_executor> tp,
+	std::shared_ptr<concurrencpp::Thread_pool_executor> tp,
 	int* a,
 	int lo,
 	int hi);
@@ -79,7 +79,7 @@ int partition(int* a, int lo, int hi) {
 			quicksort(A, p + 1, hi)
 
 */
-result<void> quick_sort(executor_tag, std::shared_ptr<thread_pool_executor> tp, int* a, int lo, int hi) {
+result<void> quick_sort(executor_tag, std::shared_ptr<Thread_pool_executor> tp, int* a, int lo, int hi) {
 	if (lo >= hi) {
 		co_return;
 	}

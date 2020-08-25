@@ -1,4 +1,5 @@
-#include "timer_queue.h"
+#include "../../include/timers/Timer_queue.h"
+
 #include "timer.h"
 
 #include "../results/result.h"
@@ -11,13 +12,13 @@
 using namespace std::chrono;
 
 using concurrencpp::timer;
-using concurrencpp::timer_queue;
+using concurrencpp::Timer_queue;
 using concurrencpp::details::timer_request;
 using concurrencpp::details::timer_state_base;
 
-using timer_ptr = timer_queue::timer_ptr;
-using time_point = timer_queue::time_point;
-using request_queue = timer_queue::request_queue;
+using timer_ptr = Timer_queue::timer_ptr;
+using time_point = Timer_queue::time_point;
+using request_queue = Timer_queue::request_queue;
 
 namespace concurrencpp::details {
     struct deadline_comparator {
@@ -133,9 +134,9 @@ namespace concurrencpp::details {
     };
 }
 
-timer_queue::timer_queue() noexcept : m_abort(false) {}
+Timer_queue::Timer_queue() noexcept : m_abort(false) {}
 
-timer_queue::~timer_queue() noexcept {
+Timer_queue::~Timer_queue() noexcept {
     {
         std::unique_lock<decltype(m_lock)> lock(m_lock);
         if (!m_worker.joinable()) {
@@ -149,7 +150,7 @@ timer_queue::~timer_queue() noexcept {
     m_worker.join();
 }
 
-void timer_queue::add_timer(std::unique_lock<std::mutex>& lock, timer_ptr new_timer) noexcept {
+void Timer_queue::add_timer(std::unique_lock<std::mutex>& lock, timer_ptr new_timer) noexcept {
     assert(lock.owns_lock());
     m_request_queue.emplace_back(std::move(new_timer), timer_request::add);
     lock.unlock();
@@ -157,7 +158,7 @@ void timer_queue::add_timer(std::unique_lock<std::mutex>& lock, timer_ptr new_ti
     m_condition.notify_one();
 }
 
-void timer_queue::remove_timer(timer_ptr existing_timer) noexcept {
+void Timer_queue::remove_timer(timer_ptr existing_timer) noexcept {
     {
         std::unique_lock<decltype(m_lock)> lock(m_lock);
         m_request_queue.emplace_back(std::move(existing_timer), timer_request::remove);
@@ -166,7 +167,7 @@ void timer_queue::remove_timer(timer_ptr existing_timer) noexcept {
     m_condition.notify_one();
 }
 
-void timer_queue::work_loop() noexcept {
+void Timer_queue::work_loop() noexcept {
     time_point next_deadline;
     details::timer_queue_internal internal_state;
 
@@ -198,7 +199,7 @@ void timer_queue::work_loop() noexcept {
     }
 }
 
-void timer_queue::ensure_worker_thread(std::unique_lock<std::mutex>& lock) {
+void Timer_queue::ensure_worker_thread(std::unique_lock<std::mutex>& lock) {
     (void)lock;
     assert(lock.owns_lock());
     if (m_worker.joinable()) {
@@ -210,7 +211,7 @@ void timer_queue::ensure_worker_thread(std::unique_lock<std::mutex>& lock) {
     });
 }
 
-concurrencpp::result<void> timer_queue::make_delay_object(size_t due_time, std::shared_ptr<executor> executor) {
+concurrencpp::result<void> Timer_queue::make_delay_object(size_t due_time, std::shared_ptr<Executor> executor) {
     if (!static_cast<bool>(executor)) {
         throw std::invalid_argument("concurrencpp::timer_queue::make_delay_object - executor is null.");
     }

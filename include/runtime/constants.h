@@ -2,7 +2,7 @@
 #define CONCURRENCPP_CONSTANTS_H
 
 #include <numeric>
-
+#include <stddef.h>
 namespace concurrencpp::details::consts {
 	constexpr static size_t k_cpu_threadpool_worker_count_factor = 1;
 	constexpr static size_t k_background_threadpool_worker_count_factor = 4;

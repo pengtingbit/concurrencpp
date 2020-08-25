@@ -29,7 +29,7 @@ namespace concurrencpp::tests {
 
 void concurrencpp::tests::test_thread_pool_executor_name() {
 	const auto name = "abcde12345&*(";
-	auto executor = std::make_shared<concurrencpp::thread_pool_executor>(name, 4, std::chrono::seconds(10));
+	auto executor = std::make_shared<concurrencpp::Thread_pool_executor>(name, 4, std::chrono::seconds(10));
 	executor_shutdowner shutdowner(executor);
 	assert_equal(executor->name, name);
 }
@@ -37,7 +37,7 @@ void concurrencpp::tests::test_thread_pool_executor_name() {
 void concurrencpp::tests::test_thread_pool_executor_shutdown_coro_raii() {
 	object_observer observer;
 	const size_t task_count = 1'024;
-	auto executor = std::make_shared<thread_pool_executor>("threadpool", 1, std::chrono::seconds(4));
+	auto executor = std::make_shared<Thread_pool_executor>("threadpool", 1, std::chrono::seconds(4));
 
 	std::vector<value_testing_stub> stubs;
 	stubs.reserve(task_count);
@@ -66,7 +66,7 @@ void concurrencpp::tests::test_thread_pool_executor_shutdown_coro_raii() {
 }
 
 void concurrencpp::tests::test_thread_pool_executor_shutdown_thread_join() {
-	auto executor = std::make_shared<thread_pool_executor>("threadpool", 9, std::chrono::seconds(1));
+	auto executor = std::make_shared<Thread_pool_executor>("threadpool", 9, std::chrono::seconds(1));
 
 	for (size_t i = 0; i < 3; i++) {
 		executor->post([] {});
@@ -87,7 +87,7 @@ void concurrencpp::tests::test_thread_pool_executor_shutdown_thread_join() {
 }
 
 void concurrencpp::tests::test_thread_pool_executor_shutdown_enqueue() {
-	auto executor = std::make_shared<thread_pool_executor>("threadpool", 4, std::chrono::seconds(10));
+	auto executor = std::make_shared<Thread_pool_executor>("threadpool", 4, std::chrono::seconds(10));
 	assert_false(executor->shutdown_requested());
 
 	executor->shutdown();
@@ -114,7 +114,7 @@ void concurrencpp::tests::test_thread_pool_executor_post() {
 	object_observer observer;
 	const size_t task_count = 100'000;
 	const size_t worker_count = 6;
-	auto executor = std::make_shared<thread_pool_executor>("threadpool", worker_count, std::chrono::seconds(10));
+	auto executor = std::make_shared<Thread_pool_executor>("threadpool", worker_count, std::chrono::seconds(10));
 	executor_shutdowner shutdown(executor);
 
 	for (size_t i = 0; i < task_count; i++) {
@@ -131,7 +131,7 @@ void concurrencpp::tests::test_thread_pool_executor_submit() {
 	object_observer observer;
 	const size_t task_count = 100'000;
 	const size_t worker_count = 6;
-	auto executor = std::make_shared<thread_pool_executor>("threadpool", worker_count, std::chrono::seconds(10));
+	auto executor = std::make_shared<Thread_pool_executor>("threadpool", worker_count, std::chrono::seconds(10));
 	executor_shutdowner shutdown(executor);
 
 	std::vector<result<size_t>> results;
@@ -155,7 +155,7 @@ void concurrencpp::tests::test_thread_pool_executor_bulk_post() {
 	object_observer observer;
 	const size_t task_count = 40'000;
 	const size_t worker_count = 6;
-	auto executor = std::make_shared<thread_pool_executor>("threadpool", worker_count, std::chrono::seconds(10));
+	auto executor = std::make_shared<Thread_pool_executor>("threadpool", worker_count, std::chrono::seconds(10));
 	executor_shutdowner shutdown(executor);
 
 	std::vector<testing_stub> stubs;
@@ -177,7 +177,7 @@ void concurrencpp::tests::test_thread_pool_executor_bulk_submit() {
 	object_observer observer;
 	const size_t task_count = 40'000;
 	const size_t worker_count = 6;
-	auto executor = std::make_shared<thread_pool_executor>("threadpool", worker_count, std::chrono::seconds(10));
+	auto executor = std::make_shared<Thread_pool_executor>("threadpool", worker_count, std::chrono::seconds(10));
 	executor_shutdowner shutdown(executor);
 
 	std::vector<value_testing_stub> stubs;
@@ -204,7 +204,7 @@ void concurrencpp::tests::test_thread_pool_executor_enqueue_algorithm() {
 	{
 		object_observer observer;
 		const size_t worker_count = 6;
-		auto executor = std::make_shared<thread_pool_executor>("threadpool", worker_count, std::chrono::seconds(10));
+		auto executor = std::make_shared<Thread_pool_executor>("threadpool", worker_count, std::chrono::seconds(10));
 		executor_shutdowner shutdown(executor);
 
 		for (size_t i = 0; i < worker_count; i++) {
@@ -225,7 +225,7 @@ void concurrencpp::tests::test_thread_pool_executor_enqueue_algorithm() {
 	{
 		object_observer observer;
 		auto wc = concurrencpp::details::wait_context::make();
-		auto executor = std::make_shared<thread_pool_executor>("threadpool", 2, std::chrono::seconds(10));
+		auto executor = std::make_shared<Thread_pool_executor>("threadpool", 2, std::chrono::seconds(10));
 		executor_shutdowner shutdown(executor);
 
 		executor->post([wc] () {
@@ -254,7 +254,7 @@ void concurrencpp::tests::test_thread_pool_executor_enqueue_algorithm() {
 		const size_t worker_count = 2;
 		object_observer observer;
 		auto wc = concurrencpp::details::wait_context::make();
-		auto executor = std::make_shared<thread_pool_executor>("threadpool", worker_count, std::chrono::seconds(10));
+		auto executor = std::make_shared<Thread_pool_executor>("threadpool", worker_count, std::chrono::seconds(10));
 		executor_shutdowner shutdown(executor);
 
 		for (size_t i = 0; i < worker_count; i++) {
@@ -291,7 +291,7 @@ void concurrencpp::tests::test_thread_pool_executor_dynamic_resizing() {
 		const size_t iterations = 4;
 		const size_t task_count = 1'000;
 		object_observer observer;
-		auto executor = std::make_shared<thread_pool_executor>("threadpool", worker_count, std::chrono::seconds(5));
+		auto executor = std::make_shared<Thread_pool_executor>("threadpool", worker_count, std::chrono::seconds(5));
 		executor_shutdowner shutdown(executor);
 
 		for (size_t i = 0; i < iterations; i++) {
@@ -317,7 +317,7 @@ void concurrencpp::tests::test_thread_pool_executor_dynamic_resizing() {
 		const size_t worker_count = 4;
 		const size_t task_count = 4'000;
 		object_observer observer;
-		auto executor = std::make_shared<thread_pool_executor>("threadpool", worker_count, std::chrono::seconds(1));
+		auto executor = std::make_shared<Thread_pool_executor>("threadpool", worker_count, std::chrono::seconds(1));
 		executor_shutdowner shutdown(executor);
 
 		for (size_t i = 0; i < iterations; i++) {

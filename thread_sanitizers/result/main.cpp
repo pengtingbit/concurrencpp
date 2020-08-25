@@ -2,11 +2,11 @@
 
 #include <iostream>
 
-void result_get(std::shared_ptr<concurrencpp::thread_pool_executor> tp);
-void result_wait(std::shared_ptr<concurrencpp::thread_pool_executor> tp);
-void result_wait_for(std::shared_ptr<concurrencpp::thread_pool_executor> tp);
-concurrencpp::result<void> result_await(std::shared_ptr<concurrencpp::thread_pool_executor> tp);
-concurrencpp::result<void> result_await_via(std::shared_ptr<concurrencpp::thread_pool_executor> tp);
+void result_get(std::shared_ptr<concurrencpp::Thread_pool_executor> tp);
+void result_wait(std::shared_ptr<concurrencpp::Thread_pool_executor> tp);
+void result_wait_for(std::shared_ptr<concurrencpp::Thread_pool_executor> tp);
+concurrencpp::result<void> result_await(std::shared_ptr<concurrencpp::Thread_pool_executor> tp);
+concurrencpp::result<void> result_await_via(std::shared_ptr<concurrencpp::Thread_pool_executor> tp);
 
 int main() {
 	concurrencpp::runtime_options opts;
@@ -36,7 +36,7 @@ int main() {
 
 using namespace concurrencpp;
 
-void result_get(std::shared_ptr<thread_pool_executor> tp) {
+void result_get(std::shared_ptr<Thread_pool_executor> tp) {
     const size_t task_count = 8'000'000;
 
     std::vector<result<int>> results;
@@ -57,7 +57,7 @@ void result_get(std::shared_ptr<thread_pool_executor> tp) {
     }
 }
 
-void result_wait(std::shared_ptr<thread_pool_executor> tp) {
+void result_wait(std::shared_ptr<Thread_pool_executor> tp) {
     const size_t task_count = 8'000'000;
 
     std::vector<result<int>> results;
@@ -79,7 +79,7 @@ void result_wait(std::shared_ptr<thread_pool_executor> tp) {
     }
 }
 
-void result_wait_for(std::shared_ptr<thread_pool_executor> tp) {
+void result_wait_for(std::shared_ptr<Thread_pool_executor> tp) {
     const size_t task_count = 8'000'000;
 
     std::vector<result<int>> results;
@@ -102,7 +102,7 @@ void result_wait_for(std::shared_ptr<thread_pool_executor> tp) {
     }
 }
 
-result<void> result_await(std::shared_ptr<thread_pool_executor> tp) {
+result<void> result_await(std::shared_ptr<Thread_pool_executor> tp) {
     const size_t task_count = 8'000'000;
 
     std::vector<result<int>> results;
@@ -123,7 +123,7 @@ result<void> result_await(std::shared_ptr<thread_pool_executor> tp) {
     }
 }
 
-result<void> result_await_via(std::shared_ptr<thread_pool_executor> tp) {
+result<void> result_await_via(std::shared_ptr<Thread_pool_executor> tp) {
     const size_t task_count = 8'000'000;
 
     std::vector<result<int>> results;

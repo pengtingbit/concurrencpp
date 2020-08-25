@@ -37,14 +37,14 @@ namespace concurrencpp::tests {
 }
 
 void concurrencpp::tests::test_thread_executor_name() {
-	auto executor = std::make_shared<concurrencpp::thread_executor>();
+	auto executor = std::make_shared<concurrencpp::Thread_executor>();
 	executor_shutdowner shutdown(executor);
 
 	assert_equal(executor->name, concurrencpp::details::consts::k_thread_executor_name);
 }
 
 void concurrencpp::tests::test_thread_executor_shutdown_enqueue() {
-	auto executor = std::make_shared<thread_executor>();
+	auto executor = std::make_shared<Thread_executor>();
 	assert_false(executor->shutdown_requested());
 
 	executor->shutdown();
@@ -63,7 +63,7 @@ void concurrencpp::tests::test_thread_executor_shutdown_enqueue() {
 
 void concurrencpp::tests::test_thread_executor_shutdown_join() {
 	//the executor returns only when all tasks are done.
-	auto executor = std::make_shared<thread_executor>();
+	auto executor = std::make_shared<Thread_executor>();
 	object_observer observer;
 	const size_t task_count = 16;
 
@@ -84,7 +84,7 @@ void concurrencpp::tests::test_thread_executor_shutdown() {
 }
 
 void concurrencpp::tests::test_thread_executor_max_concurrency_level() {
-	auto executor = std::make_shared<thread_executor>();
+	auto executor = std::make_shared<Thread_executor>();
 	executor_shutdowner shutdown(executor);
 
 	assert_equal(executor->max_concurrency_level(),
@@ -94,7 +94,7 @@ void concurrencpp::tests::test_thread_executor_max_concurrency_level() {
 void concurrencpp::tests::test_thread_executor_post() {
 	object_observer observer;
 	const size_t task_count = 128;
-	auto executor = std::make_shared<thread_executor>();
+	auto executor = std::make_shared<Thread_executor>();
 	executor_shutdowner shutdown(executor);
 
 	for (size_t i = 0; i < task_count; i++) {
@@ -110,7 +110,7 @@ void concurrencpp::tests::test_thread_executor_post() {
 void concurrencpp::tests::test_thread_executor_submit() {
 	object_observer observer;
 	const size_t task_count = 128;
-	auto executor = std::make_shared<thread_executor>();
+	auto executor = std::make_shared<Thread_executor>();
 	executor_shutdowner shutdown(executor);
 
 	std::vector<result<size_t>> results;
@@ -133,7 +133,7 @@ void concurrencpp::tests::test_thread_executor_submit() {
 void concurrencpp::tests::test_thread_executor_bulk_post() {
 	object_observer observer;
 	const size_t task_count = 128;
-	auto executor = std::make_shared<thread_executor>();
+	auto executor = std::make_shared<Thread_executor>();
 	executor_shutdowner shutdown(executor);
 
 	std::vector<testing_stub> stubs;
@@ -154,7 +154,7 @@ void concurrencpp::tests::test_thread_executor_bulk_post() {
 void concurrencpp::tests::test_thread_executor_bulk_submit() {
 	object_observer observer;
 	const size_t task_count = 128;
-	auto executor = std::make_shared<thread_executor>();
+	auto executor = std::make_shared<Thread_executor>();
 	executor_shutdowner shutdown(executor);
 
 	std::vector<value_testing_stub> stubs;

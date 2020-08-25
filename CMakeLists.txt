@@ -32,7 +32,7 @@ set(BOARD_DRIVER "board" CACHE STRING "Specific hardware driver for communicatio
 
 find_package(Threads REQUIRED)
 
-set(CLANG_COROUTINES_COMPILE_FLAGS "-Wall -Wextra -std=c++2a")
+set(CLANG_COROUTINES_COMPILE_FLAGS "-Wall -Wextra -std=c++2a -fcoroutines")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CLANG_COROUTINES_COMPILE_FLAGS}")
 
 #if( CMAKE_BUILD_TYPE MATCHES Debug AND STANDALONE_BUILD )

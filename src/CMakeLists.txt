@@ -8,7 +8,7 @@ set(SOURCE
 	executors/thread_executor.cpp
 	executors/thread_pool_executor.cpp
 	executors/worker_thread_executor.cpp
-	timers/timer_queue.cpp
+	timers/Timer_queue.cpp
 	timers/timer.cpp
 )
 

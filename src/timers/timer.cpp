@@ -1,10 +1,11 @@
 #include "timers/timer.h"
-#include "timers/timer_queue.h"
+
+#include "../../include/executors/executor.h"
+#include "../../include/timers/Timer_queue.h"
 #include "timers/constants.h"
 
 #include "errors.h"
 #include "results/result.h"
-#include "executors/executor.h"
 
 using concurrencpp::timer;
 using concurrencpp::details::timer_state;
@@ -13,8 +14,8 @@ using concurrencpp::details::timer_state_base;
 timer_state_base::timer_state_base(
 	size_t due_time,
 	size_t frequency,
-	std::shared_ptr<concurrencpp::executor> executor,
-	std::weak_ptr<concurrencpp::timer_queue> timer_queue,
+	std::shared_ptr<concurrencpp::Executor> executor,
+	std::weak_ptr<concurrencpp::Timer_queue> timer_queue,
 	bool is_oneshot) noexcept :
 	m_timer_queue(std::move(timer_queue)),
 	m_executor(std::move(executor)),
@@ -61,12 +62,12 @@ size_t timer::get_frequency() const {
 	return m_state->get_frequency();
 }
 
-std::shared_ptr<concurrencpp::executor> timer::get_executor() const {
+std::shared_ptr<concurrencpp::Executor> timer::get_executor() const {
 	throw_if_empty(details::consts::k_timer_empty_get_executor_err_msg);
 	return m_state->get_executor();
 }
 
-std::weak_ptr<concurrencpp::timer_queue> timer::get_timer_queue() const {
+std::weak_ptr<concurrencpp::Timer_queue> timer::get_timer_queue() const {
 	throw_if_empty(details::consts::k_timer_empty_get_timer_queue_err_msg);
 	return m_state->get_timer_queue();
 }

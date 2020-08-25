@@ -10,11 +10,11 @@ namespace concurrencpp::tests {
 }
 
 namespace concurrencpp::tests {
-	struct dummy_executor : public concurrencpp::executor {
+	struct dummy_executor : public concurrencpp::Executor {
 
 		bool shutdown_requested_flag = false;
 
-		dummy_executor(const char* name, int, float) : executor(name) {}
+		dummy_executor(const char* name, int, float) : Executor(name) {}
 
 		void enqueue(std::coroutine_handle<>) override {}
 		void enqueue(std::span<std::coroutine_handle<>>) override {}
@@ -27,7 +27,7 @@ namespace concurrencpp::tests {
 }
 
 void concurrencpp::tests::test_runtime_destructor() {
-	std::shared_ptr<concurrencpp::executor> executors[7];
+	std::shared_ptr<concurrencpp::Executor> executors[7];
 
 	{
 		concurrencpp::runtime runtime;

@@ -1,5 +1,6 @@
 #include "result_core.h"
-#include "../executors/executor.h"
+
+#include "../../include/executors/executor.h"
 
 using concurrencpp::details::wait_context;
 using concurrencpp::details::await_context;
@@ -81,7 +82,7 @@ bool result_core_base::await(std::coroutine_handle<> caller_handle) noexcept {
 }
 
 bool result_core_base::await_via(
-	std::shared_ptr<concurrencpp::executor> executor,
+	std::shared_ptr<concurrencpp::Executor> executor,
 	std::coroutine_handle<> caller_handle,
 	bool force_rescheduling) {
 	assert(static_cast<bool>(executor));
@@ -119,7 +120,7 @@ bool result_core_base::await_via(
 }
 
 void result_core_base::schedule_coroutine(
-	concurrencpp::executor& executor,
+	concurrencpp::Executor& executor,
 	std::coroutine_handle<> coro_handle) {
 	assert(static_cast<bool>(coro_handle));
 	assert(!coro_handle.done());

@@ -9,13 +9,13 @@ namespace concurrencpp {
 
 	class runtime;
 
-	class timer_queue;
+	class Timer_queue;
 	class timer;
 
-	class executor;
-	class inline_executor;
-	class thread_pool_executor;
-	class thread_executor;
+	class Executor;
+	class Inline_executor;
+	class Thread_pool_executor;
+	class Thread_executor;
 	class worker_thread_executor;
 	class manual_executor;
 }

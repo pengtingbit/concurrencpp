@@ -38,13 +38,13 @@ namespace concurrencpp {
 
 	private:
 		std::shared_ptr<details::result_core<type>> m_state;
-		std::shared_ptr<executor> m_executor;
+		std::shared_ptr<Executor> m_executor;
 		const bool m_force_rescheduling;
 
 	public:
 		via_awaitable(
 			std::shared_ptr<details::result_core<type>> state,
-			std::shared_ptr<concurrencpp::executor> executor,
+			std::shared_ptr<concurrencpp::Executor> executor,
 			bool force_rescheduling) noexcept :
 			m_state(std::move(state)),
 			m_executor(std::move(executor)),
@@ -96,13 +96,13 @@ namespace concurrencpp {
 
 	private:
 		std::shared_ptr<details::result_core<type>> m_state;
-		std::shared_ptr<concurrencpp::executor> m_executor;
+		std::shared_ptr<concurrencpp::Executor> m_executor;
 		const bool m_force_rescheduling;
 
 	public:
 		resolve_via_awaitable(
 			std::shared_ptr<details::result_core<type>> state,
-			std::shared_ptr<concurrencpp::executor> executor,
+			std::shared_ptr<concurrencpp::Executor> executor,
 			bool force_rescheduling) noexcept :
 			m_state(state),
 			m_executor(std::move(executor)),

@@ -23,7 +23,7 @@ namespace concurrencpp::details {
 }
 
 namespace concurrencpp {
-	class timer_queue : public std::enable_shared_from_this<timer_queue> {
+	class Timer_queue : public std::enable_shared_from_this<Timer_queue> {
 
 	public:
 		using timer_ptr = std::shared_ptr<details::timer_state_base>;
@@ -49,7 +49,7 @@ namespace concurrencpp {
 		timer_ptr make_timer_impl(
 			size_t due_time,
 			size_t frequency,
-			std::shared_ptr<concurrencpp::executor> executor,
+			std::shared_ptr<concurrencpp::Executor> executor,
 			bool is_oneshot,
 			callable_type&& callable) {
 
@@ -74,14 +74,14 @@ namespace concurrencpp {
 		void work_loop() noexcept;
 
 	public:
-		timer_queue() noexcept;
-		~timer_queue() noexcept;
+		Timer_queue() noexcept;
+		~Timer_queue() noexcept;
 
 		template<class callable_type>
 		timer make_timer(
 			size_t due_time,
 			size_t frequency,
-			std::shared_ptr<concurrencpp::executor> executor,
+			std::shared_ptr<concurrencpp::Executor> executor,
 			callable_type&& callable) {
 
 			if(!static_cast<bool>(executor)) {
@@ -100,7 +100,7 @@ namespace concurrencpp {
 		timer make_timer(
 			size_t due_time,
 			size_t frequency,
-			std::shared_ptr<concurrencpp::executor> executor,
+			std::shared_ptr<concurrencpp::Executor> executor,
 			callable_type&& callable,
 			argumet_types&& ... arguments) {
 
@@ -121,7 +121,7 @@ namespace concurrencpp {
 		template<class callable_type>
 		timer make_one_shot_timer(
 			size_t due_time,
-			std::shared_ptr<concurrencpp::executor> executor,
+			std::shared_ptr<concurrencpp::Executor> executor,
 			callable_type&& callable) {
 
 			if (!static_cast<bool>(executor)) {
@@ -139,7 +139,7 @@ namespace concurrencpp {
 		template<class callable_type, class ... argumet_types>
 		timer make_one_shot_timer(
 			size_t due_time,
-			std::shared_ptr<concurrencpp::executor> executor,
+			std::shared_ptr<concurrencpp::Executor> executor,
 			callable_type&& callable,
 			argumet_types&& ... arguments) {
 
@@ -157,7 +157,7 @@ namespace concurrencpp {
 					std::forward<argumet_types>(arguments)...));
 		}
 
-		result<void> make_delay_object(size_t due_time, std::shared_ptr<concurrencpp::executor> executor);
+		result<void> make_delay_object(size_t due_time, std::shared_ptr<concurrencpp::Executor> executor);
 	};
 }
 

@@ -52,13 +52,13 @@ using time_point = std::chrono::time_point<high_resolution_clock>;
 namespace concurrencpp::tests {
 	auto empty_callback = []() noexcept {};
 
-	class counter_executor : public concurrencpp::executor {
+	class counter_executor : public concurrencpp::Executor {
 
 	private:
 		std::atomic_size_t m_invocation_count;
 
 	public:
-		counter_executor() : executor("timer_counter_executor"), m_invocation_count(0) {}
+		counter_executor() : Executor("timer_counter_executor"), m_invocation_count(0) {}
 
 		void enqueue(std::coroutine_handle<> task) override {
 			++m_invocation_count;
@@ -86,7 +86,7 @@ namespace concurrencpp::tests {
 		}
 	};
 
-	class recording_executor : public concurrencpp::executor {
+	class recording_executor : public concurrencpp::Executor {
 
 	public:
 		mutable std::mutex m_lock;
@@ -94,7 +94,7 @@ namespace concurrencpp::tests {
 		::time_point m_start_time;
 
 	public:
-		recording_executor() : executor("timer_recording_executor") {
+		recording_executor() : Executor("timer_recording_executor") {
 			m_time_points.reserve(64);
 		};
 
@@ -158,7 +158,7 @@ namespace concurrencpp::tests {
 		const size_t m_due_time;
 		size_t m_frequency;
 		const std::shared_ptr<recording_executor> m_executor;
-		const std::shared_ptr<concurrencpp::timer_queue> m_timer_queue;
+		const std::shared_ptr<concurrencpp::Timer_queue> m_timer_queue;
 		concurrencpp::timer m_timer;
 
 		void assert_timer_stats() noexcept {
@@ -204,7 +204,7 @@ namespace concurrencpp::tests {
 		timer_tester(
 			const size_t due_time,
 			const size_t frequency,
-			std::shared_ptr<concurrencpp::timer_queue> timer_queue) :
+			std::shared_ptr<concurrencpp::Timer_queue> timer_queue) :
 			m_due_time(due_time),
 			m_frequency(frequency),
 			m_executor(std::make_shared<recording_executor>()),
@@ -269,7 +269,7 @@ namespace concurrencpp::tests {
 void concurrencpp::tests::test_one_timer() {
 	const size_t due_time = 1270;
 	const size_t frequency = 3230;
-	auto tq = std::make_shared<concurrencpp::timer_queue>();
+	auto tq = std::make_shared<concurrencpp::Timer_queue>();
 
 	timer_tester tester(due_time, frequency, tq);
 	tester.start_timer_test();
@@ -281,7 +281,7 @@ void concurrencpp::tests::test_one_timer() {
 
 void concurrencpp::tests::test_many_timers() {
 	random randomizer;
-	auto timer_queue = std::make_shared<concurrencpp::timer_queue>();
+	auto timer_queue = std::make_shared<concurrencpp::Timer_queue>();
 	std::list<timer_tester> testers;
 
 	const size_t due_time_min = 100;
@@ -322,10 +322,10 @@ void concurrencpp::tests::test_timer_destructor_empty_timer() {
 
 void concurrencpp::tests::test_timer_destructor_dead_timer_queue() {
 	timer timer;
-	auto executor = std::make_shared<concurrencpp::inline_executor>();
+	auto executor = std::make_shared<concurrencpp::Inline_executor>();
 
 	{
-		auto timer_queue = std::make_shared<concurrencpp::timer_queue>();
+		auto timer_queue = std::make_shared<concurrencpp::Timer_queue>();
 
 		timer = timer_queue->make_timer(
 			10 * 1000,
@@ -339,7 +339,7 @@ void concurrencpp::tests::test_timer_destructor_dead_timer_queue() {
 
 void concurrencpp::tests::test_timer_destructor_functionality() {
 	auto executor = std::make_shared<counter_executor>();
-	auto timer_queue = std::make_shared<concurrencpp::timer_queue>();
+	auto timer_queue = std::make_shared<concurrencpp::Timer_queue>();
 
 	size_t invocation_count_before = 0;
 
@@ -360,8 +360,8 @@ void concurrencpp::tests::test_timer_destructor_functionality() {
 void concurrencpp::tests::test_timer_destructor_RAII() {
 	const size_t timer_count = 1'024;
 	object_observer observer;
-	auto timer_queue = std::make_shared<concurrencpp::timer_queue>();
-	auto inline_executor = std::make_shared<concurrencpp::inline_executor>();
+	auto timer_queue = std::make_shared<concurrencpp::Timer_queue>();
+	auto inline_executor = std::make_shared<concurrencpp::Inline_executor>();
 
 	std::vector<concurrencpp::timer> timers;
 	timers.reserve(timer_count);
@@ -396,8 +396,8 @@ void concurrencpp::tests::test_timer_cancel_dead_timer_queue() {
 	timer timer;
 
 	{
-		auto timer_queue = std::make_shared<concurrencpp::timer_queue>();
-		auto executor = std::make_shared<concurrencpp::inline_executor>();
+		auto timer_queue = std::make_shared<concurrencpp::Timer_queue>();
+		auto executor = std::make_shared<concurrencpp::Inline_executor>();
 
 		timer = timer_queue->make_timer(
 			10 * 1000,
@@ -412,7 +412,7 @@ void concurrencpp::tests::test_timer_cancel_dead_timer_queue() {
 
 void concurrencpp::tests::test_timer_cancel_before_due_time() {
 	object_observer observer;
-	auto timer_queue = std::make_shared<concurrencpp::timer_queue>();
+	auto timer_queue = std::make_shared<concurrencpp::Timer_queue>();
 	auto wt_executor = std::make_shared<concurrencpp::worker_thread_executor>();
 
 	auto timer = timer_queue->make_timer(
@@ -434,7 +434,7 @@ void concurrencpp::tests::test_timer_cancel_before_due_time() {
 
 void concurrencpp::tests::test_timer_cancel_after_due_time_before_beat() {
 	object_observer observer;
-	auto timer_queue = std::make_shared<concurrencpp::timer_queue>();
+	auto timer_queue = std::make_shared<concurrencpp::Timer_queue>();
 	auto wt_executor = std::make_shared<concurrencpp::worker_thread_executor>();
 
 	auto timer = timer_queue->make_timer(
@@ -458,7 +458,7 @@ void concurrencpp::tests::test_timer_cancel_after_due_time_before_beat() {
 
 void concurrencpp::tests::test_timer_cancel_after_due_time_after_beat() {
 	object_observer observer;
-	auto timer_queue = std::make_shared<concurrencpp::timer_queue>();
+	auto timer_queue = std::make_shared<concurrencpp::Timer_queue>();
 	auto wt_executor = std::make_shared<concurrencpp::worker_thread_executor>();
 
 	auto timer = timer_queue->make_timer(
@@ -487,8 +487,8 @@ void concurrencpp::tests::test_timer_cancel_after_due_time_after_beat() {
 void concurrencpp::tests::test_timer_cancel_RAII() {
 	const size_t timer_count = 1'024;
 	object_observer observer;
-	auto timer_queue = std::make_shared<concurrencpp::timer_queue>();
-	auto inline_executor = std::make_shared<concurrencpp::inline_executor>();
+	auto timer_queue = std::make_shared<concurrencpp::Timer_queue>();
+	auto inline_executor = std::make_shared<concurrencpp::Inline_executor>();
 
 	std::vector<concurrencpp::timer> timers;
 	timers.reserve(timer_count);
@@ -520,8 +520,8 @@ void concurrencpp::tests::test_timer_cancel() {
 }
 
 void concurrencpp::tests::test_timer_operator_bool() {
-	auto timer_queue = std::make_shared<concurrencpp::timer_queue>();
-	auto inline_executor = std::make_shared<concurrencpp::inline_executor>();
+	auto timer_queue = std::make_shared<concurrencpp::Timer_queue>();
+	auto inline_executor = std::make_shared<concurrencpp::Inline_executor>();
 
 	auto timer_1 = timer_queue->make_timer(
 		10 * 1000,
@@ -540,7 +540,7 @@ void concurrencpp::tests::test_timer_operator_bool() {
 }
 
 void concurrencpp::tests::test_timer_set_frequency_before_due_time() {
-	auto timer_queue = std::make_shared<concurrencpp::timer_queue>();
+	auto timer_queue = std::make_shared<concurrencpp::Timer_queue>();
 	timer_tester tester(1'000, 1'000, timer_queue);
 	tester.start_timer_test();
 
@@ -552,7 +552,7 @@ void concurrencpp::tests::test_timer_set_frequency_before_due_time() {
 }
 
 void concurrencpp::tests::test_timer_set_frequency_after_due_time() {
-	auto timer_queue = std::make_shared<concurrencpp::timer_queue>();
+	auto timer_queue = std::make_shared<concurrencpp::Timer_queue>();
 	timer_tester tester(1'000, 1'000, timer_queue);
 	tester.start_timer_test();
 
@@ -576,7 +576,7 @@ void concurrencpp::tests::test_timer_set_frequency() {
 }
 
 void concurrencpp::tests::test_timer_once() {
-	auto timer_queue = std::make_shared<concurrencpp::timer_queue>();
+	auto timer_queue = std::make_shared<concurrencpp::Timer_queue>();
 	timer_tester tester(350, 0, timer_queue);
 	tester.start_once_timer_test();
 
@@ -586,7 +586,7 @@ void concurrencpp::tests::test_timer_once() {
 }
 
 void concurrencpp::tests::test_timer_delay() {
-	auto timer_queue = std::make_shared<concurrencpp::timer_queue>();
+	auto timer_queue = std::make_shared<concurrencpp::Timer_queue>();
 	auto wt_executor = std::make_shared<concurrencpp::worker_thread_executor>();
 	const size_t expected_interval = 150;
 
@@ -615,10 +615,10 @@ void concurrencpp::tests::test_timer_assignment_operator_empty_to_empty() {
 }
 
 void concurrencpp::tests::test_timer_assignment_operator_non_empty_to_non_empty() {
-	auto timer_queue = std::make_shared<concurrencpp::timer_queue>();
+	auto timer_queue = std::make_shared<concurrencpp::Timer_queue>();
 
-	auto executor0 = std::make_shared<inline_executor>();
-	auto executor1 = std::make_shared<inline_executor>();
+	auto executor0 = std::make_shared<Inline_executor>();
+	auto executor1 = std::make_shared<Inline_executor>();
 
 	object_observer observer0, observer1;
 
@@ -639,8 +639,8 @@ void concurrencpp::tests::test_timer_assignment_operator_non_empty_to_non_empty(
 }
 
 void concurrencpp::tests::test_timer_assignment_operator_empty_to_non_empty() {
-	auto timer_queue = std::make_shared<concurrencpp::timer_queue>();
-	auto executor = std::make_shared<inline_executor>();
+	auto timer_queue = std::make_shared<concurrencpp::Timer_queue>();
+	auto executor = std::make_shared<Inline_executor>();
 	object_observer observer;
 
 	auto timer0 = timer_queue->make_timer(
@@ -659,8 +659,8 @@ void concurrencpp::tests::test_timer_assignment_operator_empty_to_non_empty() {
 }
 
 void concurrencpp::tests::test_timer_assignment_operator_non_empty_to_empty() {
-	auto timer_queue = std::make_shared<concurrencpp::timer_queue>();
-	auto executor = std::make_shared<inline_executor>();
+	auto timer_queue = std::make_shared<concurrencpp::Timer_queue>();
+	auto executor = std::make_shared<Inline_executor>();
 	object_observer observer;
 
 	concurrencpp::timer timer0;
@@ -681,8 +681,8 @@ void concurrencpp::tests::test_timer_assignment_operator_non_empty_to_empty() {
 }
 
 void concurrencpp::tests::test_timer_assignment_operator_assign_to_self() {
-	auto timer_queue = std::make_shared<concurrencpp::timer_queue>();
-	auto executor = std::make_shared<inline_executor>();
+	auto timer_queue = std::make_shared<concurrencpp::Timer_queue>();
+	auto executor = std::make_shared<Inline_executor>();
 	object_observer observer;
 
 	auto timer = timer_queue->make_timer(

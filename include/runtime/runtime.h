@@ -15,10 +15,10 @@ namespace concurrencpp::details {
 
 	private:
 		std::mutex m_lock;
-		std::vector<std::shared_ptr<executor>> m_executors;
+		std::vector<std::shared_ptr<Executor>> m_executors;
 
 	public:
-		void register_executor(std::shared_ptr<executor> executor);
+		void register_executor(std::shared_ptr<Executor> executor);
 		void shutdown_all() noexcept;
 	};
 }
@@ -40,12 +40,12 @@ namespace concurrencpp {
 	class runtime {
 
 	private:
-		std::shared_ptr<timer_queue> m_timer_queue;
+		std::shared_ptr<Timer_queue> m_timer_queue;
 
-		std::shared_ptr<inline_executor> m_inline_executor;
-		std::shared_ptr<thread_pool_executor> m_thread_pool_executor;
-		std::shared_ptr<thread_pool_executor> m_background_executor;
-		std::shared_ptr<thread_executor> m_thread_executor;
+		std::shared_ptr<Inline_executor> m_inline_executor;
+		std::shared_ptr<Thread_pool_executor> m_thread_pool_executor;
+		std::shared_ptr<Thread_pool_executor> m_background_executor;
+		std::shared_ptr<Thread_executor> m_thread_executor;
 
 		details::executor_collection m_registered_executors;
 
@@ -55,12 +55,12 @@ namespace concurrencpp {
 
 		~runtime() noexcept;
 
-		std::shared_ptr<concurrencpp::timer_queue> timer_queue() const noexcept;
+		std::shared_ptr<concurrencpp::Timer_queue> timer_queue() const noexcept;
 
-		std::shared_ptr<concurrencpp::inline_executor> inline_executor() const noexcept;
-		std::shared_ptr<concurrencpp::thread_pool_executor> thread_pool_executor() const noexcept;
-		std::shared_ptr<concurrencpp::thread_pool_executor> background_executor() const noexcept;
-		std::shared_ptr<concurrencpp::thread_executor> thread_executor() const noexcept;
+		std::shared_ptr<concurrencpp::Inline_executor> inline_executor() const noexcept;
+		std::shared_ptr<concurrencpp::Thread_pool_executor> thread_pool_executor() const noexcept;
+		std::shared_ptr<concurrencpp::Thread_pool_executor> background_executor() const noexcept;
+		std::shared_ptr<concurrencpp::Thread_executor> thread_executor() const noexcept;
 
 		std::shared_ptr<concurrencpp::worker_thread_executor> make_worker_thread_executor();
 		std::shared_ptr<concurrencpp::manual_executor> make_manual_executor();
@@ -69,7 +69,7 @@ namespace concurrencpp {
 
 		template<class executor_type, class ... argument_types>
 		std::shared_ptr<executor_type> make_executor(argument_types&& ... arguments) {
-			static_assert(std::is_base_of_v<concurrencpp::executor, executor_type>,
+			static_assert(std::is_base_of_v<concurrencpp::Executor, executor_type>,
 				"concurrencpp::runtime::make_executor - <<executor_type>> is not a derived class of concurrencpp::executor.");
 
 			static_assert(std::is_constructible_v<executor_type, argument_types...>,

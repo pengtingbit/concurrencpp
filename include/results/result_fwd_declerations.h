@@ -5,7 +5,8 @@
 
 #include <memory>
 #include <utility>
-#include <coroutine>
+/*#include <coroutine>*/
+#include </usr/include/c++/10/coroutine>
 
 namespace concurrencpp {
 	template<class type> class result;
@@ -37,7 +38,7 @@ namespace concurrencpp::details {
 	template<class type>
 	using coro_handle = std::coroutine_handle<coroutine_state<type>>;
 
-	using await_context = std::pair<std::shared_ptr<executor>, std::coroutine_handle<>>;
+	using await_context = std::pair<std::shared_ptr<Executor>, std::coroutine_handle<>>;
 
 	struct executor_bulk_tag {};
 }

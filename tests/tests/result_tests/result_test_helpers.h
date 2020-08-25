@@ -118,14 +118,14 @@ namespace concurrencpp::tests {
 }
 
 namespace concurrencpp::tests {
-	class test_executor : public ::concurrencpp::executor {
+	class test_executor : public ::concurrencpp::Executor {
 
 	private:
 		std::thread m_execution_thread;
 		std::thread m_setting_thread;
 
 	public:
-		test_executor() noexcept : executor("test_executor") {}
+		test_executor() noexcept : Executor("test_executor") {}
 
 		~test_executor() noexcept {
 			if (m_execution_thread.joinable()) {
@@ -193,9 +193,9 @@ namespace concurrencpp::tests {
 }
 
 namespace concurrencpp::tests {
-	struct throwing_executor : public concurrencpp::executor {
+	struct throwing_executor : public concurrencpp::Executor {
 
-		throwing_executor() : executor("throwing_executor") {}
+		throwing_executor() : Executor("throwing_executor") {}
 
 		void enqueue(std::coroutine_handle<>) override {
 			throw std::runtime_error("executor exception");
@@ -221,7 +221,7 @@ namespace concurrencpp::tests {
 	template<class type>
 	void test_executor_error_thrown(
 		concurrencpp::result<type> result,
-		std::shared_ptr<concurrencpp::executor> throwing_executor) {
+		std::shared_ptr<concurrencpp::Executor> throwing_executor) {
 		assert_equal(result.status(), concurrencpp::result_status::exception);
 		try {
 			result.get();
@@ -251,13 +251,13 @@ namespace concurrencpp::tests {
 
 	private:
 		result<type> m_result;
-		std::shared_ptr<concurrencpp::executor> m_test_executor;
+		std::shared_ptr<concurrencpp::Executor> m_test_executor;
 		bool m_force_rescheduling;
 
 	public:
 		await_to_resolve_coro(
 			result<type> result,
-			std::shared_ptr<concurrencpp::executor> test_executor,
+			std::shared_ptr<concurrencpp::Executor> test_executor,
 			bool force_rescheduling) noexcept :
 			m_result(std::move(result)),
 			m_test_executor(std::move(test_executor)),

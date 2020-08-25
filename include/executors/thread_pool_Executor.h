@@ -1,8 +1,6 @@
 #ifndef CONCURRENCPP_THREAD_POOL_EXECUTOR_H
 #define CONCURRENCPP_THREAD_POOL_EXECUTOR_H
 
-#include "executor.h"
-
 #include <mutex>
 #include <atomic>
 #include <vector>
@@ -11,6 +9,7 @@
 #include <coroutine>
 
 #include "../threads/thread.h"
+#include "executor.h"
 
 namespace concurrencpp::details {
 	class idle_worker_set;
@@ -62,7 +61,7 @@ namespace concurrencpp::details {
 		std::deque<std::coroutine_handle<>> m_private_queue;
 		std::vector<size_t> m_idle_worker_list;
 		std::atomic_bool m_atomic_abort;
-		thread_pool_executor& m_parent_pool;
+		Thread_pool_executor& m_parent_pool;
 		const size_t m_index;
 		const size_t m_pool_size;
 		const std::chrono::seconds m_max_idle_time;
@@ -88,7 +87,7 @@ namespace concurrencpp::details {
 
 	public:
 		thread_pool_worker(
-			thread_pool_executor& parent_pool,
+			Thread_pool_executor& parent_pool,
 			size_t index,
 			size_t pool_size,
 			std::chrono::seconds max_idle_time);
@@ -108,7 +107,7 @@ namespace concurrencpp::details {
 }
 
 namespace concurrencpp {
-	class alignas (64) thread_pool_executor final : public executor{
+	class alignas (64) Thread_pool_executor final : public Executor{
 
 		friend class details::thread_pool_worker;
 
@@ -131,9 +130,9 @@ namespace concurrencpp {
 		}
 
 	public:
-		thread_pool_executor(std::string_view name, size_t size, std::chrono::seconds max_idle_time);
+		Thread_pool_executor(std::string_view name, size_t size, std::chrono::seconds max_idle_time);
 
-		~thread_pool_executor() noexcept;
+		~Thread_pool_executor() noexcept;
 
 		void enqueue(std::coroutine_handle<> task) override;
 		void enqueue(std::span<std::coroutine_handle<>> tasks) override;
