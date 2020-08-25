@@ -5,8 +5,8 @@
 
 #include <memory>
 #include <utility>
-/*#include <coroutine>*/
-#include </usr/include/c++/10/coroutine>
+#include <coroutine>
+//#include </usr/include/c++/10/coroutine>
 
 namespace concurrencpp {
 	template<class type> class result;

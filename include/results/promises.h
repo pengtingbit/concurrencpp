@@ -156,16 +156,16 @@ namespace concurrencpp::details {
 	};
 }
 
-namespace std::experimental {
+//namespace std::experimental {
 	template<class... arguments>
-	struct coroutine_traits<::concurrencpp::null_result, arguments...> {
+	struct std::coroutine_traits<::concurrencpp::null_result, arguments...> {
 		using promise_type = concurrencpp::details::task_promise;
 	};
 
 	template<class type, class... arguments>
-	struct coroutine_traits<::concurrencpp::result<type>, arguments...> {
+	struct std::coroutine_traits<::concurrencpp::result<type>, arguments...> {
 		using promise_type = concurrencpp::details::coroutine_state<type>;
 	};
-}
+//}
 
 #endif
